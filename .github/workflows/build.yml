@@ -1,4 +1,4 @@
-name: 문플로 게임 올리기 · 앱 만들기
+name: 썬플로 게임 올리기 · 앱 만들기
 on:
   push:
     branches: [main]
@@ -7,7 +7,7 @@ permissions:
   contents: write
   pages: write
   id-token: write
-concurrency: { group: moonflo, cancel-in-progress: true }
+concurrency: { group: sunflo, cancel-in-progress: true }
 jobs:
   web:
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: app-latest
-          name: 문플로 앱 (최신)
-          body: 이 페이지의 moonflo.apk 를 폰에서 눌러 받아 설치하세요. 지우지 말고 덮어 설치하면 저장이 그대로 남습니다.
+          name: 썬플로 앱 (최신)
+          body: 이 페이지의 sunflo.apk 를 폰에서 눌러 받아 설치하세요. 지우지 말고 덮어 설치하면 저장이 그대로 남습니다.
           make_latest: true
-          files: android/app/build/outputs/apk/debug/moonflo.apk
+          files: android/app/build/outputs/apk/debug/sunflo.apk

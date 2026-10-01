@@ -14,7 +14,7 @@
   // 파일을 고르면 먼저 그 파일 안의 진행을 보여 주고 확인받음 (엉뚱한 파일을 고르는 실수 방지)
   window.onFarmRestore = t => {
     let S = null; try { S = JSON.parse(t); } catch (e) {}
-    if (!S || S.v !== 1) { B.msg = '이 파일은 문플로 저장이 아니에요'; B.ask = false; G.dirty = true; return; }
+    if (!S || S.v !== 1) { B.msg = '이 파일은 썬플로 저장이 아니에요'; B.ask = false; G.dirty = true; return; }
     const fl = S.flowers ? Object.values(S.flowers).reduce((a, b) => a + (+b || 0), 0) : 0;
     const info = [`저장한 때: ${S.ts ? fmt(S.ts) : '알 수 없음'}`, `돈 ${S.coins || 0} · 다이아 ${S.gems || 0}`, `화단 ${(S.beds || []).length}개 · 지금까지 수확 ${(S.stats && S.stats.harvest) || 0}송이 · 가진 꽃 ${fl}송이`];
     openPopup({

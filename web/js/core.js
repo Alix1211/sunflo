@@ -110,8 +110,8 @@ function resize() {
 }
 
 /* ---------- 저장 ---------- */
-const SAVE_KEY = 'moonsun_farm_v1';
-const DEV = (() => { try { let d = localStorage.getItem('moonsun_dev'); if (!d) { d = Math.random().toString(36).slice(2, 10); localStorage.setItem('moonsun_dev', d); } return d; } catch (e) { return 'x' + Math.random().toString(36).slice(2, 8); } })();
+const SAVE_KEY = 'sunflo_farm_v1';
+const DEV = (() => { try { let d = localStorage.getItem('sunflo_dev'); if (!d) { d = Math.random().toString(36).slice(2, 10); localStorage.setItem('sunflo_dev', d); } return d; } catch (e) { return 'x' + Math.random().toString(36).slice(2, 8); } })();
 function newState() {
   const S = {
     v: 1, rv: 2, created: Date.now(), cur: 'tulip',

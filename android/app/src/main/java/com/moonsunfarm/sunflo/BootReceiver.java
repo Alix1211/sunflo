@@ -1,4 +1,4 @@
-package com.moonsunfarm.game;
+package com.moonsunfarm.sunflo;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

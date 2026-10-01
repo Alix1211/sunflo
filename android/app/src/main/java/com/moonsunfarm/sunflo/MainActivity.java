@@ -1,4 +1,4 @@
-package com.moonsunfarm.game;
+package com.moonsunfarm.sunflo;
 
 import android.Manifest;
 import android.app.Activity;
@@ -52,22 +52,22 @@ import org.json.JSONObject;
 
 public final class MainActivity extends Activity {
     private WebView game;
-    private static final String SAVE_FILE = "farm-save.json";
-    private static final String SAVE_BAK = "farm-save.bak.json";
+    private static final String SAVE_FILE = "sunflo-save.json";
+    private static final String SAVE_BAK = "sunflo-save.bak.json";
     private static final int REQ_VOICE = 501, REQ_BACKUP = 502, REQ_RESTORE = 503, REQ_PERM = 504, REQ_LINK = 505;
     private SharedPreferences prefs;
     private String lastSave = "";
     private long lastBackupWrite = 0, holdUntil = 0, lastRemoteChk = 0;
     private final Handler ui = new Handler(Looper.getMainLooper());
     // 자동 업데이트: 켤 때마다 인터넷의 최신 게임을 불러오고, 안 되면 앱 안에 든 게임으로 실행
-    private static final String REMOTE = "https://alix1211.github.io/moonflo/";
+    private static final String REMOTE = "https://alix1211.github.io/sunflo/";
     private static final String LOCAL = "https://appassets.androidplatform.net/assets/index.html";
     private boolean usingLocal = false, remoteOk = false;
     private void loadLocal() { if (usingLocal) return; usingLocal = true; if (game != null) game.loadUrl(LOCAL); }
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefs = getSharedPreferences("farm", MODE_PRIVATE);
+        prefs = getSharedPreferences("sunflo", MODE_PRIVATE);
         hideBars();
         getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(v -> ui.postDelayed(this::hideBars, 1500));
         if ((getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
@@ -379,7 +379,7 @@ public final class MainActivity extends Activity {
         @JavascriptInterface public void pickBackup() {
             runOnUiThread(() -> {
                 Intent i = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                i.addCategory(Intent.CATEGORY_OPENABLE); i.setType("application/json"); i.putExtra(Intent.EXTRA_TITLE, "moonsun-farm-save.json");
+                i.addCategory(Intent.CATEGORY_OPENABLE); i.setType("application/json"); i.putExtra(Intent.EXTRA_TITLE, "sunflo-save.json");
                 i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
                 startActivityForResult(i, REQ_BACKUP);
             });

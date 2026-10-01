@@ -1,4 +1,4 @@
-// 문플로 — 소리·진동·배경음악 (파일 없이 코드로 만든 부드러운 피아노/유리 소리)
+// 썬플로 — 소리·진동·배경음악 (파일 없이 코드로 만든 부드러운 피아노/유리 소리)
 'use strict';
 (() => {
   let ac = null, master = null, sfxBus = null, bgmBus = null, verb = null, unlocked = false, bgmOn = false, bgmTimer = 0, bgmStep = 0, nextT = 0;

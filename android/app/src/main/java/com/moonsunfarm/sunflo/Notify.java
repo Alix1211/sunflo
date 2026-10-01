@@ -1,4 +1,4 @@
-package com.moonsunfarm.game;
+package com.moonsunfarm.sunflo;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -24,7 +24,7 @@ public class Notify extends BroadcastReceiver {
     static final String CH = "farm_main", CH_Q = "farm_quiet";
     static final long POLL_MS = 30L * 60 * 1000;
 
-    static SharedPreferences prefs(Context c) { return c.getSharedPreferences("farm", Context.MODE_PRIVATE); }
+    static SharedPreferences prefs(Context c) { return c.getSharedPreferences("sunflo", Context.MODE_PRIVATE); }
 
     static boolean quietNow() { int h = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); return h >= 22 || h < 7; }
 
@@ -54,7 +54,7 @@ public class Notify extends BroadcastReceiver {
             for (int i = 0; i < a.length() && n < 8; i++) {
                 JSONObject o = a.getJSONObject(i);
                 long at = o.getLong("at"); if (at <= now) continue;
-                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, growPi(c, n, o.optString("title", "문플로"), o.optString("body", "")));
+                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, growPi(c, n, o.optString("title", "썬플로"), o.optString("body", "")));
                 n++;
             }
         } catch (Exception e) { }
@@ -106,7 +106,7 @@ public class Notify extends BroadcastReceiver {
             fresh++; add.append(',').append(id);
         }
         if (fresh > 0) {
-            post(c, 299, "문플로", fresh > 1 ? "새 편지가 " + fresh + "통 도착했어요" : "우체통에 새 편지가 도착했어요");
+            post(c, 299, "썬플로", fresh > 1 ? "새 편지가 " + fresh + "통 도착했어요" : "우체통에 새 편지가 도착했어요");
             p.edit().putString("mailSeen", p.getString("mailSeen", "") + add).apply();
         }
     }
