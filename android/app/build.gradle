@@ -8,15 +8,15 @@ android {
 
     // 컴퓨터에서 빌드하든 깃허브에서 빌드하든 같은 서명 → 지우지 않고 덮어 설치(업데이트) 가능
     signingConfigs {
-        sunflo {
-            storeFile rootProject.file('sunflo.keystore')
-            storePassword 'sunflo123'
-            keyAlias 'sunflo'
-            keyPassword 'sunflo123'
+        moonflo {
+            storeFile rootProject.file('moonflo.keystore')
+            storePassword 'moonflo123'
+            keyAlias 'moonflo'
+            keyPassword 'moonflo123'
         }
     }
     buildTypes {
-        debug { signingConfig signingConfigs.sunflo }
+        debug { signingConfig signingConfigs.moonflo }
     }
 
     defaultConfig {
