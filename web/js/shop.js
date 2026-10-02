@@ -133,6 +133,7 @@ function removeProp(id) {
       if (cp < it.cost) { Story.useCoupon(); toast(`할인권 사용 · ${it.cost - cp}골드 아꼈어요`); }
       G.S.coins -= cp; G.S.owned['p_' + it.id] = true;
       const ok = placeProp(it.id), hm = giveHint(); save();
+      if (PROP_PLAY[it.id]) setTimeout(() => { say(`${it.name}을(를) 방에 놓고 눌러 보세요! 「${PROP_PLAY[it.id]}」 놀이를 할 수 있어요.`, 2); toast(`새 놀이 「${PROP_PLAY[it.id]}」가 열렸어요!`, 3500); }, 400);
       toast(`${it.name} 구매 완료!${ok ? '' : ' (자리가 없어 보관해 둬요)'}${hm}`, hm ? 4200 : 2200);
     } else buy({ id: it.id, offer: { name: it.name, cost: it.cost, kind: it.k, v: it.v } });
     say('고맙습니다.', 1); G.dirty = true;

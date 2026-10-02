@@ -12,6 +12,8 @@ button{font:inherit;font-size:21px;border:0;border-radius:14px;padding:12px 30px
 </style></head><body>
 <canvas id="c"></canvas>
 <div id="playBtns" hidden><button id="btnRe" type="button">다시 하기</button><button id="btnQuit" type="button">종료하기</button></div>
+<div class="ov" id="ovTut" hidden><div class="card" style="display:flex;gap:18px;align-items:center;text-align:left;max-width:min(680px,90vw)">
+<img src="img/mini/rabbit.webp" alt="" style="width:min(150px,28vw);flex:none"><div><p id="tutName" style="font-weight:800;color:#d9662b;margin:0 0 6px">보들이</p><p id="tutText" style="font-size:20px;line-height:1.5"></p><p style="color:#b89a72;font-size:15px;text-align:right;margin:8px 0 0">▼ 눌러서 다음</p></div></div></div>
 <div class="ov" id="ovStart"><div class="card"><h1>당근 뽑기</h1>
 <p>쏙 올라온 당근을 톡! 눌러 뽑아요.</p><p>금당근은 3개 값, 돌은 누르면 3초가 줄어요.</p>
 <p class="big" id="startInfo">60초 동안 많이 뽑을수록 돈을 받아요</p>
@@ -121,6 +123,11 @@ document.getElementById('btnRe').onclick = () => { if (st === 'play') { settle()
 document.getElementById('btnQuit').onclick = () => { if (st === 'play') finish(); };
 if (EMBED) { const bx = document.getElementById('btnExit'); bx.hidden = false; bx.onclick = () => { try { parent.postMessage({ type: 'mini-exit' }, '*'); } catch (e) {} };
   document.getElementById('startInfo').textContent = LEFT > 0 ? `많이 뽑을수록 돈! 오늘 ${LEFT}번 더 받을 수 있어요` : '오늘 보상은 다 받았어요. 놀이는 계속 할 수 있어요'; }
+// 처음 한 번: 토끼 보들이의 인사와 놀이 설명
+const TUT = ['안녕! 나는 보들이야. 오늘부터 네 방에서 같이 살게 됐어!', '그런데 말이야… 밭에 당근이 자꾸 쏙쏙 올라와. 나 혼자서는 다 못 뽑겠어!', '당근이 올라오면 톡! 눌러서 뽑아 줘. 반짝이는 금당근은 세 개 값이야.', '앗, 회색 돌은 누르면 안 돼. 시간이 3초 줄어들거든.', '많이 뽑을수록 용돈도 줄게! 하루에 두 번까지야. 준비됐지?'];
+let seen = false; try { seen = localStorage.getItem('carrot_tut') === '1'; } catch (e) {}
+if (!seen) { let k = 0; const ov = document.getElementById('ovTut'), tx = document.getElementById('tutText'); tx.textContent = TUT[0]; ov.hidden = false; document.getElementById('ovStart').hidden = true;
+  ov.onclick = () => { k++; if (k < TUT.length) { tx.textContent = TUT[k]; return; } ov.hidden = true; document.getElementById('ovStart').hidden = false; try { localStorage.setItem('carrot_tut', '1'); } catch (e) {} }; }
 addEventListener('resize', layout); layout();
 Promise.all([load('img/mini/carrot.webp'), load('img/mini/rabbit.webp'), load('img/bed_base.webp'), load(innerWidth > innerHeight ? 'img/bg_garden_pad.jpg' : 'img/bg_garden_phone.jpg')]).then(([c, r, bd, gb]) => { CAR = c; RAB = r; BED = bd; GBG = gb; BG = null; const b = document.getElementById('btnStart'); b.disabled = false; b.textContent = '시작'; requestAnimationFrame(loop); });
 })();
