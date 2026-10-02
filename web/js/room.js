@@ -60,6 +60,7 @@
   window.addEventListener('message', e => {
     const m = e.data || {};
     if (m.type === 'mini-end') {
+      if (typeof Story !== 'undefined') Story.mini(m.sec);
       const give = Math.min(Math.max(0, m.give | 0), miniLeft());
       if (give > 0) { G.S.mini.got += give; G.S.gems += give; save(); toast(`미니게임 다이아 +${give}`); }
       G.dirty = true;

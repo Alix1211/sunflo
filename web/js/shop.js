@@ -125,7 +125,9 @@ function removeProp(id) {
     if (it.req && !G.S.owned[it.req]) return;
     if (G.S.coins < it.cost) { say('돈이 조금 모자라요.', 3); toast('돈이 모자라요'); return; }
     if (it.kind === 'prop') {
-      G.S.coins -= it.cost; G.S.owned['p_' + it.id] = true;
+      const cp = st.shop === 'seed' && Story.coupon() ? Math.round(it.cost * .9) : it.cost;   // 씨앗 가게 할인권 1회
+      if (cp < it.cost) { Story.useCoupon(); toast(`할인권 사용 · ${it.cost - cp}골드 아꼈어요`); }
+      G.S.coins -= cp; G.S.owned['p_' + it.id] = true;
       const ok = placeProp(it.id), hm = giveHint(); save();
       toast(`${it.name} 구매 완료!${ok ? '' : ' (자리가 없어 보관해 둬요)'}${hm}`, hm ? 4200 : 2200);
     } else buy({ id: it.id, offer: { name: it.name, cost: it.cost, kind: it.k, v: it.v } });
