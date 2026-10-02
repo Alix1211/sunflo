@@ -82,11 +82,11 @@ function drawItem(h) {
   const up = it.hit ? Math.min(1.6, 1 + (it.t - it.hitAt) * 4) : Math.min(1, it.t / .15, (it.life - it.t) / .15);   // 올라왔다 내려감 · 뽑히면 위로 쏙
   const s = h.r * 2.3;
   ctx.save(); ctx.beginPath(); ctx.rect(h.x - s, h.y - s * 2.2, s * 2, s * 2.2); ctx.clip();          // 구멍 위로만 보이게
-  const y = h.y + s * .1 - up * s * .95;
-  if (it.kind === 'flower') { const im = FLS[it.fl]; if (im) { const fh = s * .95, fw = fh * im.width / im.height; ctx.drawImage(im, h.x - fw / 2, y + s * .05, fw, fh); } }   // 꽃(뽑으면 안 됨)
+  const y = h.y + s * .1 - up * s * 1.25;
+  if (it.kind === 'flower') { const im = FLS[it.fl]; if (im) { const fh = s * 1.3, fw = fh * im.width / im.height; ctx.drawImage(im, h.x - fw / 2, y + s * .05, fw, fh); } }   // 꽃(뽑으면 안 됨)
   else if (CAR) {
-    const w = s * .62, hh = w * CAR.height / CAR.width;
-    if (it.kind === 'gold') { ctx.globalAlpha = .55; ctx.fillStyle = '#ffe680'; ctx.beginPath(); ctx.arc(h.x, y + hh * .35, s * .55, 0, 7); ctx.fill(); ctx.globalAlpha = 1; ctx.filter = 'sepia(1) saturate(3) hue-rotate(5deg) brightness(1.15)'; }
+    const w = s * .85, hh = w * CAR.height / CAR.width;
+    if (it.kind === 'gold') { ctx.globalAlpha = .55; ctx.fillStyle = '#ffe680'; ctx.beginPath(); ctx.arc(h.x, y + hh * .35, s * .72, 0, 7); ctx.fill(); ctx.globalAlpha = 1; ctx.filter = 'sepia(1) saturate(3) hue-rotate(5deg) brightness(1.15)'; }
     ctx.translate(h.x, y + hh * .45); ctx.rotate(-.45); ctx.drawImage(CAR, -w / 2, -hh / 2, w, hh);       // 비스듬한 당근을 세워서
     ctx.filter = 'none';
   }
