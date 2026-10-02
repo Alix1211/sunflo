@@ -180,11 +180,12 @@ const PROP_EFFECT = {
   r9: ['pts', 6], r10: ['grow', 7], r11: ['sp', 7], r12: ['harvest', 6],
   h1: ['grow', 5], h2: ['seed', 7], h3: ['grow', 6], h4: ['sp', 8], h5: ['pts', 7], h6: ['pts', 5], h7: ['harvest', 7], h8: ['coin', 6],
   h9: ['sp', 9], h11: ['seed', 5], h12: ['harvest', 5],
-  n1: ['harvest', 6], n2: ['seed', 8], n3: ['grow', 6], n4: ['coin', 8], n5: ['coin', 5], n6: ['pts', 7], n7: ['sp', 6], n8: ['seed', 5],
+  n1: ['harvest', 6], n2: ['seed', 8], n3: ['grow', 6], n4: ['coin', 8], n6: ['pts', 7], n7: ['sp', 6], n8: ['seed', 5],
   n9: ['grow', 5], n10: ['harvest', 7], n11: ['pts', 6], n12: ['grow', 7], n13: ['harvest', 5], n14: ['sp', 9], n15: ['grow', 8], n16: ['coin', 5],
   n17: ['coin', 7], n18: ['pts', 8], n19: ['seed', 6], n20: ['harvest', 8], n21: ['pts', 9], n22: ['seed', 7], n23: ['sp', 5], n24: ['sp', 8],
 };
-const propEffectText = id => { const e = PROP_EFFECT[id]; return e ? EFFECT_KIND[e[0]].label(e[1]) : ''; };
+const PROP_SPECIAL = { n5: '게시판에서 내 꽃 수를 세어 줘요' };   // 숫자 능력 대신 특별한 기능
+const propEffectText = id => { if (PROP_SPECIAL[id]) return PROP_SPECIAL[id]; const e = PROP_EFFECT[id]; return e ? EFFECT_KIND[e[0]].label(e[1]) : ''; };
 // 가진 소품 능력의 합(0~1). 예: bonus('grow') = 0.14 → 14%
 function bonus(kind) {
   const S = G.S; if (!S || !S.owned) return 0; let v = 0;

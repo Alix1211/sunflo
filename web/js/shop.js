@@ -87,7 +87,7 @@ function removeProp(id) {
     const im = it.img && G.img[it.img], ib = [x + 24, y + 14, w - 48, h * (g.pad ? .33 : .38)];
     if (im) { const k = Math.min(ib[2] / im.width, ib[3] / im.height); ctx.drawImage(im, ib[0] + (ib[2] - im.width * k) / 2, ib[1] + (ib[3] - im.height * k) / 2, im.width * k, im.height * k); }
     else if (it.tag) text(it.tag, x + w / 2, ib[1] + ib[3] / 2, 46, '#b89a72', 'center');
-    if (it.kind === 'prop' && PROP_EFFECT[it.id]) {                         // 소품 능력 표시
+    if (it.kind === 'prop' && (PROP_EFFECT[it.id] || PROP_SPECIAL[it.id])) {                         // 소품 능력 표시
       const t = propEffectText(it.id), fs = g.pad ? 22 : 26; ctx.font = font(fs, 700); const tw = ctx.measureText(t).width + 24, ty = ib[1] + ib[3] - fs - 6;
       rrect(x + w / 2 - tw / 2, ty, tw, fs + 12, (fs + 12) / 2); ctx.fillStyle = own ? 'rgba(90,150,80,.92)' : 'rgba(110,80,45,.85)'; ctx.fill();
       text(t, x + w / 2, ty + (fs + 12) / 2 + 1, fs, '#fff', 'center');
