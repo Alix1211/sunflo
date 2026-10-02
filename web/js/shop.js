@@ -5,6 +5,7 @@
 function decorKey() { return JSON.stringify(G.S.decor); }
 function drawDecor(place) {
   const slots = DECOR_SLOTS[G.mode][place], list = (G.S.decor && G.S.decor[place]) || [];
+  for (const id in PROP_SPECIAL) { const j = list.indexOf(id); if (j >= 0) list.splice(j, 1); }   // 특별 소품(노란 새)은 자리에 놓지 않음 — 게시판 위에 따로 나옴
   slots.forEach((sl, i) => {
     if (!list[i] || !PROP[list[i]]) return; const im = G.img['prop_' + list[i]]; if (!im) return;
     const sc = PROP[list[i]].sc || 1, k = Math.min(sl.w * sc / im.width, sl.h * sc / im.height), w = im.width * k, h = im.height * k;
@@ -99,6 +100,7 @@ function removeProp(id) {
     const br = [x + 24, y + h - 100, w - 48, 80];
     let label, dis = false, fn;
     if (it.soon) { label = '준비 중'; dis = true; }
+    else if (it.kind === 'prop' && own && PROP_SPECIAL[it.id]) { label = '게시판에 있어요'; dis = true; }
     else if (it.kind === 'prop' && own) { const pl = isPlaced(it.id); label = pl ? '치우기' : '놓기'; fn = () => { if (pl) { removeProp(it.id); say('치웠어요.', 0); } else if (placeProp(it.id)) say('잘 어울려요.', 2); else say('자리가 다 찼어요. 놓인 것을 먼저 치워 주세요.', 3); }; }
     else if (it.kind === 'hg') { label = '구매'; dis = G.S.gems < it.cost; fn = () => buyHourglass(it); }
     else if (own) { label = '구매 완료'; dis = true; }
