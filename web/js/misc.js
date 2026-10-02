@@ -70,7 +70,8 @@ function refreshOrders() {
 function canDeliver(o) { for (const id in o.need) if ((G.S.flowers[id] || 0) < o.need[id]) return false; return true; }
 function deliver(o) {
   for (const id in o.need) G.S.flowers[id] -= o.need[id];
-  G.S.coins += o.coins; G.S.doneToday++; G.S.stats.orders = (G.S.stats.orders || 0) + 1;
+  const cb = Math.round(o.coins * bonus('coin')); if (cb) toast(`소품 덕분에 돈 +${cb}`);
+  G.S.coins += o.coins + cb; G.S.doneToday++; G.S.stats.orders = (G.S.stats.orders || 0) + 1;
   const mis = (G.S.mission = G.S.mission && G.S.mission.day === G.S.day ? G.S.mission : { day: G.S.day, done: false });
   if (!mis.done && G.S.doneToday >= RULES.missionOrders) { mis.done = true; G.S.gems += RULES.missionGems; setTimeout(() => toast(`오늘의 미션 완료! 다이아 +${RULES.missionGems}`, 3000), 2400); }
   G.S.orders = G.S.orders.filter(x => x !== o);

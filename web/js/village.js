@@ -55,9 +55,10 @@
     text(s.name, px + 40, panelY + 50, fs + 4, '#6e4b28', 'left');
     wrap(st.line, px + 40, panelY + 50 + fs + 20, pw - 80, fs, '#5c3d1e');
     st.btns = [];
-    if (s.id === 'general') {
+    const TAB = { general: 0, furniture: 1, flower: 2 };                 // 잡화점=정원 물건, 가구공방=방 물건, 꽃 도매상=온실 물건부터 보여 줌
+    if (s.id in TAB) {
       const r = pd() ? [px + 40, G.L.H - 150, 360, 110] : [px + 40, G.L.H - 200, 520, 150];
-      button(r, '물건 사기', { size: pd() ? 36 : 44 }); st.btns.push({ rect: r, fn: () => go('shop') });
+      button(r, '물건 사기', { size: pd() ? 36 : 44 }); st.btns.push({ rect: r, fn: () => { G._shopTab = TAB[s.id]; go('shop'); } });
     } else {
       text('가게 준비 중이에요. 곧 문을 열어요.', px + 40, pd() ? G.L.H - 95 : G.L.H - 125, fs - 4, '#9b7a55', 'left');
     }
