@@ -479,6 +479,7 @@ function fillSides() {
 
 function start() {
   G.S = loadState();
+  if (!G.S.testGift1) { G.S.testGift1 = 1; G.S.coins += 50000; G.S.gems += 500; setTimeout(() => { save(); toast('시험용 선물: 5만 골드 · 다이아 500개', 4000); }, 1500); }   // 썬플로(케인 시험용)만, 한 번
   resize();
   window.addEventListener('resize', resize);
   refreshOrders();
