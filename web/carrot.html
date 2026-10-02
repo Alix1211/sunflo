@@ -31,18 +31,23 @@ let CAR, RAB, BG;
 // 판: 3×3 구멍. 가로 화면이면 4×3
 let holes = [], st = 'ready', t = 0, left = 60, cnt = 0, gold = 0, spawnT = 0, last = 0, fx = [], rabbitJoy = 0;
 const DUR = 60, rnd = Math.random;
-function layout() {
-  const land = W > H, cols = land ? 4 : 3, rows = 3, top = H * (land ? .2 : .26), bot = H * (land ? .92 : .86), lw = Math.min(W * .92, land ? H * 1.7 : W * .92);
-  const cw = lw / cols, rh = (bot - top) / rows, x0 = (W - lw) / 2; holes = [];
-  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) holes.push({ x: x0 + cw * (c + .5), y: top + rh * (r + .62), r: Math.min(cw, rh) * (W > H ? .36 : .44), item: null });
+let BED = null, GBG = null, bedR = null, rabR = null;
+function layout() {       // 우리 밭 그림 한 판(4×4 칸)을 화면에 알맞게 두고, 옆에서 토끼가 응원
+  const land = W > H, bw0 = 709, bh0 = 701;
+  const k = land ? Math.min(H * .8 / bh0, W * .58 / bw0) : Math.min(W * .9 / bw0, H * .56 / bh0), bw = bw0 * k, bh = bh0 * k;
+  const bx = land ? W * .42 - bw / 2 : (W - bw) / 2, by = land ? (H - bh) / 2 + H * .03 : H * .36;
+  bedR = [bx, by, bw, bh]; holes = [];
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) holes.push({ x: bx + (90 + c * 128.3 + 59.5) * k, y: by + (125 + r * 114 + 60) * k, r: 50 * k, item: null });
+  const rh = land ? Math.min(H * .42, bw * .55) : Math.min(H * .2, W * .4);
+  rabR = land ? [bx + bw + W * .02, H * .5 - rh * .2, rh] : [W - rh * 1.05 - 10, by - rh * .95, rh];
   BG = null;
 }
 function makeBg() {
   const c = document.createElement('canvas'); c.width = cv.width; c.height = cv.height; const g = c.getContext('2d'); g.scale(dpr, dpr);
-  g.fillStyle = '#86bf62'; g.fillRect(0, 0, W, H);
-  for (let i = 0; i < 160; i++) { g.fillStyle = i % 2 ? 'rgba(110,170,80,.5)' : 'rgba(150,200,110,.45)'; g.beginPath(); g.ellipse(rnd() * W, rnd() * H, 20 + rnd() * 40, 10 + rnd() * 18, 0, 0, 7); g.fill(); }
-  for (let i = 0; i < 40; i++) { const x = rnd() * W, y = rnd() * H; g.fillStyle = ['#fff6d8', '#ffd86b', '#ffb3c6'][i % 3]; for (let k = 0; k < 5; k++) { const a = k * 1.2566; g.beginPath(); g.arc(x + Math.cos(a) * 4, y + Math.sin(a) * 4, 3, 0, 7); g.fill(); } }
-  for (const h of holes) { g.fillStyle = '#6b4a2b'; g.beginPath(); g.ellipse(h.x, h.y, h.r * 1.15, h.r * .45, 0, 0, 7); g.fill(); g.fillStyle = '#4a311b'; g.beginPath(); g.ellipse(h.x, h.y + 3, h.r * .95, h.r * .32, 0, 0, 7); g.fill(); }
+  if (GBG) { const kk = Math.max(W / GBG.width, H / GBG.height); g.drawImage(GBG, (W - GBG.width * kk) / 2, (H - GBG.height * kk) / 2, GBG.width * kk, GBG.height * kk); g.fillStyle = 'rgba(255,250,235,.18)'; g.fillRect(0, 0, W, H); }
+  else { g.fillStyle = '#86bf62'; g.fillRect(0, 0, W, H); }
+  if (BED) g.drawImage(BED, ...bedR);
+  for (const h of holes) { g.fillStyle = 'rgba(70,45,25,.85)'; g.beginPath(); g.ellipse(h.x, h.y, h.r * 1.05, h.r * .42, 0, 0, 7); g.fill(); g.fillStyle = 'rgba(40,25,12,.9)'; g.beginPath(); g.ellipse(h.x, h.y + 2, h.r * .85, h.r * .3, 0, 0, 7); g.fill(); }
   return c;
 }
 function speed() { return Math.max(.62, 1.25 - t / 70); }               // 당근이 나와 있는 시간(점점 짧아짐)
@@ -55,7 +60,7 @@ function tap(x, y) {
   if (st !== 'play') return;
   for (const h of holes) {
     const it = h.item; if (!it || it.hit) continue;
-    if (Math.hypot(x - h.x, y - (h.y - h.r * .6)) > h.r * 1.25) continue;
+    if (Math.hypot(x - h.x, y - (h.y - h.r * .6)) > h.r * (W > H ? 1.3 : 1.7)) continue;   // 폰은 칸이 작아 누르는 범위를 넓게
     it.hit = 1; it.hitAt = it.t;
     if (it.kind === 'rock') { left -= 3; fx.push({ x: h.x, y: h.y - h.r, s: '-3초', c: '#8a8a8a', l: 1 }); }
     else { const v = it.kind === 'gold' ? 3 : 1; cnt += v; rabbitJoy = .5; fx.push({ x: h.x, y: h.y - h.r * 1.4, s: '+' + v, c: it.kind === 'gold' ? '#f5b82e' : '#e57a3a', l: 1 }); }
@@ -73,7 +78,7 @@ function update(dt) {
 function drawItem(h) {
   const it = h.item; if (!it) return;
   const up = it.hit ? Math.min(1.6, 1 + (it.t - it.hitAt) * 4) : Math.min(1, it.t / .15, (it.life - it.t) / .15);   // 올라왔다 내려감 · 뽑히면 위로 쏙
-  const s = h.r * 2.1;
+  const s = h.r * 2.3;
   ctx.save(); ctx.beginPath(); ctx.rect(h.x - s, h.y - s * 2.2, s * 2, s * 2.2); ctx.clip();          // 구멍 위로만 보이게
   const y = h.y + s * .1 - up * s * .95;
   if (it.kind === 'rock') { ctx.fillStyle = '#9a9a96'; ctx.beginPath(); ctx.ellipse(h.x, y + s * .35, s * .42, s * .34, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#b8b8b2'; ctx.beginPath(); ctx.ellipse(h.x - s * .12, y + s * .25, s * .16, s * .1, 0, 0, 7); ctx.fill(); }
@@ -91,7 +96,9 @@ function draw() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   if (!BG) BG = makeBg(); ctx.drawImage(BG, 0, 0, W, H);
   for (const h of holes) drawItem(h);
-  if (RAB) { const rh = Math.min(H * .2, 180), rw = rh * RAB.width / RAB.height, j = rabbitJoy > 0 ? Math.sin(rabbitJoy * 20) * 8 : 0; ctx.drawImage(RAB, W - rw - 14, 10 - Math.abs(j), rw, rh); }
+  if (RAB && rabR) { const rh = rabR[2], rw = rh * RAB.width / RAB.height, j = rabbitJoy > 0 ? Math.abs(Math.sin(rabbitJoy * 18)) * rh * .12 : Math.abs(Math.sin(t * 3)) * rh * .02;
+    ctx.drawImage(RAB, rabR[0], rabR[1] - j, rw, rh);                                  // 옆에서 응원하는 토끼(뽑을 때마다 폴짝)
+    if (rabbitJoy > 0) { ctx.font = `bold ${Math.round(rh * .14)}px sans-serif`; ctx.textAlign = 'center'; ctx.fillStyle = '#e57a3a'; ctx.fillText('잘한다!', rabR[0] + rw / 2, rabR[1] - j - rh * .05); } }
   ctx.font = 'bold 26px sans-serif'; ctx.textBaseline = 'middle'; ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(60,40,20,.6)'; ctx.fillStyle = '#fff';
   ctx.textAlign = 'left'; const tt = '⏱ ' + mmss(left) + '초'; ctx.strokeText(tt, 16, 32); ctx.fillText(tt, 16, 32);
   const ct = '🥕 ' + cnt; ctx.strokeText(ct, 16, 70); ctx.fillText(ct, 16, 70);
@@ -115,6 +122,6 @@ document.getElementById('btnQuit').onclick = () => { if (st === 'play') finish()
 if (EMBED) { const bx = document.getElementById('btnExit'); bx.hidden = false; bx.onclick = () => { try { parent.postMessage({ type: 'mini-exit' }, '*'); } catch (e) {} };
   document.getElementById('startInfo').textContent = LEFT > 0 ? `많이 뽑을수록 돈! 오늘 ${LEFT}번 더 받을 수 있어요` : '오늘 보상은 다 받았어요. 놀이는 계속 할 수 있어요'; }
 addEventListener('resize', layout); layout();
-Promise.all([load('img/mini/carrot.webp'), load('img/mini/rabbit.webp')]).then(([c, r]) => { CAR = c; RAB = r; const b = document.getElementById('btnStart'); b.disabled = false; b.textContent = '시작'; requestAnimationFrame(loop); });
+Promise.all([load('img/mini/carrot.webp'), load('img/mini/rabbit.webp'), load('img/bed_base.webp'), load(innerWidth > innerHeight ? 'img/bg_garden_pad.jpg' : 'img/bg_garden_phone.jpg')]).then(([c, r, bd, gb]) => { CAR = c; RAB = r; BED = bd; GBG = gb; BG = null; const b = document.getElementById('btnStart'); b.disabled = false; b.textContent = '시작'; requestAnimationFrame(loop); });
 })();
 </script></body></html>
