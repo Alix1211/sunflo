@@ -91,9 +91,10 @@ function openOrders() {
         const pd = G.mode === 'pad', SH = pd ? 74 : 96, fl = FLOWERS.slice(0, openKinds()), bw = SH * 1.1, iw = (r[2] - bw) / fl.length;
         rrect(r[0], r[1], r[2], SH, SH / 2); ctx.fillStyle = 'rgba(255,240,200,.85)'; ctx.fill();
         if (G.img.prop_n5) imgFit(G.img.prop_n5, r[0] + bw / 2, r[1] + SH / 2, SH * 1.05);
-        fl.forEach((f, i) => { const cx = r[0] + bw + iw * i + iw / 2, n = G.S.flowers[f.id] || 0;
-          imgFit(G.img[`flower_${f.id}_bloom`], cx - iw * .18, r[1] + SH / 2, Math.min(SH * .8, iw * .55));
-          text(String(n), cx + iw * .2, r[1] + SH / 2 + 2, pd ? 28 : 32, n ? '#4f7d2c' : '#b8a07a', 'center'); });
+        const need = orderNeed();
+        fl.forEach((f, i) => { const cx = r[0] + bw + iw * i + iw / 2, n = G.S.flowers[f.id] || 0, nd = need[f.id] || 0;
+          imgFit(G.img[`flower_${f.id}_bloom`], cx - iw * .2, r[1] + SH / 2, Math.min(SH * .8, iw * .5));
+          text(nd ? `${n}/${nd}` : String(n), cx + iw * .2, r[1] + SH / 2 + 2, pd ? 26 : 30, nd ? (n >= nd ? '#4f7d2c' : '#c0522c') : '#b8a07a', 'center'); });
         r = [r[0], r[1] + SH + 14, r[2], r[3] - SH - 14];
       }
       const GAP = 26, RH = (r[3] - GAP * 2) / 3, total = list.length * RH + (list.length - 1) * GAP;

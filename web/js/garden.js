@@ -320,9 +320,12 @@
       if (G.S.owned.p_n5) {                              // 노란 새: 나무 게시판에 지금 가진 꽃 수를 적어 둠
         const b = G.L.board, ix = b[0] + b[2] * .13, iy = b[1] + b[3] * .3, iw = b[2] * .72, ih = b[3] * .62, fl = FLOWERS.slice(0, openKinds());
         const cols = 4, rows = Math.ceil(fl.length / cols), cw = iw / cols, ch = ih / 3, fs = Math.min(ch * .55, cw * .3), oy = (3 - rows) * ch / 2;   // 12종까지 4×3 칸, 줄 간격은 고정
-        fl.forEach((f, i) => { const cx = ix + (i % cols) * cw, cy = iy + oy + Math.floor(i / cols) * ch + ch / 2, n = G.S.flowers[f.id] || 0;
-          imgFit(G.img[`flower_${f.id}_bloom`], cx + cw * .28, cy, Math.min(ch * .9, cw * .5));
-          text(String(n), cx + cw * .72, cy + 2, fs, n ? '#fffbe8' : 'rgba(255,245,220,.55)', 'center', true); });
+        const need = orderNeed();
+        fl.forEach((f, i) => { const cx = ix + (i % cols) * cw, cy = iy + oy + Math.floor(i / cols) * ch + ch / 2, n = G.S.flowers[f.id] || 0, nd = need[f.id] || 0;
+          imgFit(G.img[`flower_${f.id}_bloom`], cx + cw * .24, cy, Math.min(ch * .9, cw * .45));
+          // 의뢰에 필요한 꽃은 '가진 수/필요한 수' (모자라면 분홍, 넉넉하면 연두), 필요 없는 꽃은 가진 수만 흐리게
+          if (nd) text(`${n}/${nd}`, cx + cw * .7, cy + 2, fs * .9, n >= nd ? '#c8f5a0' : '#ffb3b3', 'center', true);
+          else text(String(n), cx + cw * .7, cy + 2, fs, 'rgba(255,245,220,.6)', 'center', true); });
       }
       if (G.S.owned.p_n5 && G.img.prop_n5) { const r = birdRect(); ctx.drawImage(G.img.prop_n5, r[0], r[1] + Math.sin(Date.now() / 600) * 3, r[2], r[3]); }   // 게시판 위 노란 새
       drawTopInfo();

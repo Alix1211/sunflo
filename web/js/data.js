@@ -315,3 +315,6 @@ Object.assign(RULES, {
   specialGems: [0, 0, 1, 2, 3, 5],     // 등급별 다이아
 });
 const seedCost = () => Math.max(1, Math.round(RULES.seedCost * (1 - bonus('seed'))));   // 소품 능력: 씨앗 만들기 비용
+
+// 지금 남은 일반 의뢰에 필요한 꽃 수 합계(특별 의뢰 제외) — 노란 새 게시판용
+function orderNeed() { const n = {}; for (const o of (G.S.orders || [])) for (const id in o.need) n[id] = (n[id] || 0) + o.need[id]; return n; }
