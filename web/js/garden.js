@@ -319,8 +319,8 @@
       }
       if (G.S.owned.p_n5) {                              // 노란 새: 나무 게시판에 지금 가진 꽃 수를 적어 둠
         const b = G.L.board, ix = b[0] + b[2] * .13, iy = b[1] + b[3] * .3, iw = b[2] * .72, ih = b[3] * .62, fl = FLOWERS.slice(0, openKinds());
-        const cols = fl.length > 8 ? 4 : fl.length > 6 ? 4 : 3, rows = Math.ceil(fl.length / cols), cw = iw / cols, ch = ih / rows, fs = Math.min(ch * .55, cw * .3);
-        fl.forEach((f, i) => { const cx = ix + (i % cols) * cw, cy = iy + Math.floor(i / cols) * ch + ch / 2, n = G.S.flowers[f.id] || 0;
+        const cols = 4, rows = Math.ceil(fl.length / cols), cw = iw / cols, ch = ih / 3, fs = Math.min(ch * .55, cw * .3), oy = (3 - rows) * ch / 2;   // 12종까지 4×3 칸, 줄 간격은 고정
+        fl.forEach((f, i) => { const cx = ix + (i % cols) * cw, cy = iy + oy + Math.floor(i / cols) * ch + ch / 2, n = G.S.flowers[f.id] || 0;
           imgFit(G.img[`flower_${f.id}_bloom`], cx + cw * .28, cy, Math.min(ch * .9, cw * .5));
           text(String(n), cx + cw * .72, cy + 2, fs, n ? '#fffbe8' : 'rgba(255,245,220,.55)', 'center', true); });
       }
