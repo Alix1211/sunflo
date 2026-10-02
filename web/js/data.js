@@ -90,7 +90,7 @@ const BUTTONS = {
 BUTTONS.shop = [];
 BUTTONS.lab = [];
 const BTN_LABEL = {
-  orders: '의뢰', mail: '우체통', shop: '상점', inventory: '인벤토리', seed: '지금 씨앗',
+  orders: '의뢰', mail: '우체통', shop: '마을', inventory: '인벤토리', seed: '지금 씨앗',
   room: '방', garden: '정원', greenhouse: '온실',
   craft: '씨앗 제작', hint: '힌트',
   voice: '말로 쓰기', today: '오늘 기록', calendar: '달력',
