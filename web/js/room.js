@@ -29,15 +29,28 @@
           button(rc, `${nm}  :  ${o[k] ? '켜짐' : '꺼짐'}`, { size: fs, active: !!o[k] });
           this.btns.push({ rect: rc, fn: () => SFX.toggle(k) });
         });
-        const tr = [x, y + 20 + 3 * (bh + 22), w, bh];
+        const tr = [x, y + 20 + 3 * (bh + 22), (w - 20) / 2, bh];   // 오른쪽 절반은 「처음부터 다시」
         button(tr, '진동 시험해 보기', { size: fs });
         this.btns.push({ rect: tr, fn: () => { const wasOn = G.S.opt.vib; G.S.opt.vib = 1; SFX.vib('mixOk'); G.S.opt.vib = wasOn; this.info = (window.FarmBridge && FarmBridge.vibInfo ? FarmBridge.vibInfo() : '폰 앱이 아니라서 진동을 못 씁니다') + ' / 결과:' + (SFX.lastVib || '-'); } });
         const lr = [x, tr[1] + bh + 22, w, bh], lite = liteOn();          // 이 기기에만 저장(다른 기기·보관 파일엔 영향 없음)
         button(lr, `가벼운 화면(이 기기만)  :  ${lite ? '켜짐' : '꺼짐'}`, { size: fs, active: lite });
         this.btns.push({ rect: lr, fn: () => { try { localStorage.setItem('liteScreen', lite ? '0' : '1'); } catch (e) {} resize(); } });
+        // 처음부터 다시 (썬플로만): 두 번 확인 → 폰 안 진행과 보관 파일을 새 진행으로 덮어씀
+        const rr = [x + (w + 20) / 2, tr[1], (w - 20) / 2, bh], st = this.reset || 0;
+        button(rr, st === 0 ? '처음부터 다시' : st === 1 ? '정말 다 지울까요?' : '한 번 더 누르면 지워요', { size: fs - 4 });
+        this.btns.push({ rect: rr, fn: () => { if (st < 2) { this.reset = st + 1; return; } resetAll(); } });
         if (this.info) wrap(this.info, x, lr[1] + bh + 20, w, pd ? 28 : 32, '#6e4b28');
       },
     });
+  }
+  function resetAll() {
+    const S = newState(); S.testGift1 = 1; S.opt = G.S.opt; S.rv = 2; S.ts = S.syncTs = Date.now(); S.dev = DEV;   // 시험용 선물은 다시 안 받음, 소리 설정은 유지
+    const t = JSON.stringify(S);
+    try { if (window.FarmBridge && FarmBridge.holdBackup) FarmBridge.holdBackup(0); } catch (e) {}
+    G.S = S; G.restoring = true; clearTimeout(saveTimer);
+    try { if (window.FarmBridge && FarmBridge.save) FarmBridge.save(t); } catch (e) {}
+    try { localStorage.setItem(SAVE_KEY, t); } catch (e) {}
+    setTimeout(() => location.reload(), 600);
   }
   const roomStage = gardenStage;                          // 정원과 같은 시간표
   const newPhone = () => false;                         // 썬플로 방 그림은 낮·저녁·밤 구도가 같음
