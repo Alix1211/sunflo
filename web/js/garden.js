@@ -317,6 +317,13 @@
         ctx.beginPath(); ctx.arc(bx, by, 32, 0, 7); ctx.fillStyle = '#e24b3b'; ctx.fill(); ctx.lineWidth = 5; ctx.strokeStyle = '#fff'; ctx.stroke();
         text(String(n), bx, by + 1, 36, '#fff', 'center');
       }
+      if (G.S.owned.p_n5) {                              // 노란 새: 나무 게시판에 지금 가진 꽃 수를 적어 둠
+        const b = G.L.board, ix = b[0] + b[2] * .13, iy = b[1] + b[3] * .3, iw = b[2] * .72, ih = b[3] * .62, fl = FLOWERS.slice(0, openKinds());
+        const cols = fl.length > 8 ? 4 : fl.length > 6 ? 4 : 3, rows = Math.ceil(fl.length / cols), cw = iw / cols, ch = ih / rows, fs = Math.min(ch * .55, cw * .3);
+        fl.forEach((f, i) => { const cx = ix + (i % cols) * cw, cy = iy + Math.floor(i / cols) * ch + ch / 2, n = G.S.flowers[f.id] || 0;
+          imgFit(G.img[`flower_${f.id}_bloom`], cx + cw * .28, cy, Math.min(ch * .9, cw * .5));
+          text(String(n), cx + cw * .72, cy + 2, fs, n ? '#fffbe8' : 'rgba(255,245,220,.55)', 'center', true); });
+      }
       if (G.S.owned.p_n5 && G.img.prop_n5) { const r = birdRect(); ctx.drawImage(G.img.prop_n5, r[0], r[1] + Math.sin(Date.now() / 600) * 3, r[2], r[3]); }   // 게시판 위 노란 새
       drawTopInfo();
       drawFx();
