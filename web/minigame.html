@@ -95,7 +95,7 @@ function update(dt){
  spawnAcc+=(.9+t/30)*1.2*dt;while(spawnAcc>=1){spawnAcc--;if(E.length<50)spawn()}
  shotCd-=dt;if(shotCd<=0){if(fire())shotCd=Math.max(.35,.85-t/180);else shotCd=.1}
  for(let i=B.length-1;i>=0;i--){const b=B[i];b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;let dead=b.life<=0;
-  if(!dead)for(const e of E){if(Math.abs(e.x-b.x)<34*e.sz&&Math.abs(e.y-14-b.y)<34*e.sz&&Math.hypot(e.x-b.x,e.y-14-b.y)<22*e.sz+13){e.hp--;e.fl=.12;dead=true;break}}
+  if(!dead)for(const e of E){if(Math.abs(e.x-b.x)<22*e.sz&&Math.abs(e.y-14-b.y)<22*e.sz&&Math.hypot(e.x-b.x,e.y-14-b.y)<22*e.sz){e.hp--;e.fl=.12;dead=true;break}}
   if(dead)B.splice(i,1)}
  for(let i=E.length-1;i>=0;i--){const e=E[i];if(e.hp<=0){pop(e.x,e.y-14,['#ffd86b','#ff9db5','#fff'][i%3]);E.splice(i,1);continue}
   const ax=P.x-e.x,ay=P.y-e.y,d=Math.hypot(ax,ay)||1;e.x+=ax/d*e.sp*dt;e.y+=ay/d*e.sp*dt;if(e.fl>0)e.fl-=dt;
