@@ -306,8 +306,9 @@ const OPEN_BY_BEDS = [6, 8, 9, 10, 12];
 const openKinds = () => Math.min(FLOWERS.length, OPEN_BY_BEDS[Math.min(G.S.beds.length, OPEN_BY_BEDS.length) - 1]);
 const FUTURE_GROW = { cosmos: [8, 8], freesia: [12, 12], carnation: [18, 18], peony: [25, 25], lily: [35, 35], camellia: [50, 50] };
 Object.assign(RULES, {
-  mailUrl: '',              // 구글 시트 편지함 주소 (Apps Script 웹 앱 주소)
+  mailUrl: 'https://script.google.com/macros/s/AKfycbwH0L7DihvS7wDojN2m4e2HcA_7zfCuRnvgXTZpZmeueK_G5b3C--L-ZKfXXginzIc4/exec?box=kane',   // 문플로와 같은 편지함 시트 · 케인 우체통              // 구글 시트 편지함 주소 (Apps Script 웹 앱 주소)
   mailFrom: '케인',         // 답장에 적히는 보낸 사람
+  mailTo: 'dalhae',        // 편지·선물을 받는 쪽 (문플로 달해)
   matchKinds: 6,            // 온실 맞추기 판에 한 번에 나오는 꽃 종류 수 (판이 새로 만들어질 때마다 바뀜)
   specialFromBeds: 2,       // 밭이 이만큼 이상 되면 특수 의뢰가 오기 시작
   specialPerDay: 2,         // 하루에 오는 특수 의뢰 수
