@@ -3,17 +3,21 @@
 (() => {
   // 눌리는 물건 (그림 크기에 대한 비율: x1,y1,x2,y2). 물건보다 넉넉하게 잡음
   // 썬플로: 기록 물건은 누르지 않고, 달력과 탁자 위 게임기만 눌림
+  // 썬플로: 기록 물건은 누르지 않고, 달력과 탁자 위 게임기만 눌림 (물건에 딱 맞게, 비율 x1,y1,x2,y2)
   const OBJ = {
     pad: [
-      { id: 'game',     name: '게임기',  r: [.10, .26, .30, .42] },     // 동그란 탁자 위 게임기
-      { id: 'calendar', name: '달력',    r: [.905, .31, 1.0, .46] },
+      { id: 'game',     name: '게임기', r: [.235, .40, .31, .47] },     // 동그란 탁자 위 게임기
+      { id: 'calendar', name: '달력',   r: [.90, .31, .985, .44] },
     ],
     phone: [
-      { id: 'game',     name: '게임기',  r: [.06, .42, .48, .53] },
-      { id: 'calendar', name: '달력',    r: [.84, .325, 1.0, .40] },
+      { id: 'game',     name: '게임기', r: [.23, .45, .40, .49] },
+      { id: 'calendar', name: '달력',   r: [.85, .33, .98, .39] },
     ],
   };
-  const OBJ_NEW_PHONE = OBJ.phone;
+  const OBJ_NEW_PHONE = [                               // 세로 저녁 그림만 구도가 다름
+    { id: 'game',     name: '게임기', r: [.16, .28, .30, .32] },
+    { id: 'calendar', name: '달력',   r: [.90, .225, .98, .30] },
+  ];
   const soundRect = () => { const b = backupRect(); return [b[0] - b[2] - 16, b[1], b[2], b[3]]; };
   function openSound() {
     openPopup({
@@ -37,9 +41,10 @@
   }
   const roomStage = gardenStage;                          // 정원과 같은 시간표
   const newPhone = () => false;                         // 썬플로 방 그림은 낮·저녁·밤 구도가 같음
-  const objs = () => newPhone() ? OBJ_NEW_PHONE : OBJ[G.mode];
+  const objs = () => G.mode === 'phone' && roomStage() === 'dusk' ? OBJ_NEW_PHONE : OBJ[G.mode];
   const SOON = { calendar: '달력' };
-  const rects = () => objs().map(o => ({ ...o, rc: [o.r[0] * G.L.W, o.r[1] * G.L.H, (o.r[2] - o.r[0]) * G.L.W, (o.r[3] - o.r[1]) * G.L.H] }));
+  const rects = () => objs().map(o => { const mx = .025 * G.L.W, my = .025 * G.L.H, x = o.r[0] * G.L.W, y = o.r[1] * G.L.H, w = (o.r[2] - o.r[0]) * G.L.W, h = (o.r[3] - o.r[1]) * G.L.H;
+    return { ...o, top: [x + w / 2, y], rc: [x - mx, y - my, w + mx * 2, h + my * 2] }; });   // 누르는 범위는 물건보다 조금 넓게
   const backupRect = () => { const [sx, sy, sw, sh] = G.L.save; return [sx + sw - 300, sy + sh + 10, 300, G.mode === 'pad' ? 70 : 84]; };
   function open(id) {
     if (id === 'voice') return openDiary();
@@ -113,7 +118,7 @@
       drawChar();
       { const b = backupRect(); button(b, '☁ 저장 보관', { size: G.mode === 'pad' ? 30 : 34 }); const c = soundRect(); button(c, '♪ 소리·진동', { size: G.mode === 'pad' ? 30 : 34 }); }
       const s = G.mode === 'pad' ? 34 : 40;
-      rects().forEach((o, i) => sparkle(o.rc[0] + o.rc[2] * .5, o.rc[1] + o.rc[3] * .18, s, i * 1.7));
+      rects().forEach((o, i) => sparkle(o.top[0], o.top[1] - s * .5, s, i * 1.7));   // 물건 바로 위에서 반짝
     },
     up(p, tap) {
       if (!tap) return;
