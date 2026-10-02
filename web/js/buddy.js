@@ -124,7 +124,7 @@
     else { const tx = Math.min(bx + bw - 90, Math.max(bx + 90, px)); ctx.moveTo(tx - 30, by + bh - 2); ctx.lineTo(tx + 6, by + bh + 50); ctx.lineTo(tx + 34, by + bh - 2); }
     ctx.closePath(); ctx.fillStyle = '#fffaf0'; ctx.fill();
     // 이름표
-    rrect(bx + 30, by - 30, 150, 62, 31); ctx.fillStyle = '#e9b7a6'; ctx.fill(); text('달해', bx + 105, by + 1, 36, '#fff', 'center');
+    rrect(bx + 30, by - 30, 150, 62, 31); ctx.fillStyle = '#e9b7a6'; ctx.fill(); text('케인', bx + 105, by + 1, 36, '#fff', 'center');
     let left = shown;
     lines.forEach((ln, i) => { const s = ln.slice(0, Math.max(0, Math.min(ln.length, left))); left -= ln.length; text(s, bx + pd, by + pd + 40 + i * lh, size, '#5c3d1e', 'left', false, 600); });
     if (shown >= full.length) { const a = .5 + .5 * Math.sin(Date.now() / 300); ctx.globalAlpha = a; text(k.i < k.pages.length - 1 ? '▼ 눌러서 다음' : '▼ 눌러서 닫기', bx + bw - pd, by + bh - 34, size * .6, '#a98457', 'right'); ctx.globalAlpha = 1; }

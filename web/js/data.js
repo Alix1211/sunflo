@@ -264,7 +264,7 @@ const openKinds = () => Math.min(FLOWERS.length, OPEN_BY_BEDS[Math.min(G.S.beds.
 const FUTURE_GROW = { cosmos: [8, 8], freesia: [12, 12], carnation: [18, 18], peony: [25, 25], lily: [35, 35], camellia: [50, 50] };
 Object.assign(RULES, {
   mailUrl: '',              // 구글 시트 편지함 주소 (Apps Script 웹 앱 주소)
-  mailFrom: '달해',         // 답장에 적히는 보낸 사람
+  mailFrom: '케인',         // 답장에 적히는 보낸 사람
   matchKinds: 6,            // 온실 맞추기 판에 한 번에 나오는 꽃 종류 수 (판이 새로 만들어질 때마다 바뀜)
   specialFromBeds: 2,       // 밭이 이만큼 이상 되면 특수 의뢰가 오기 시작
   specialPerDay: 2,         // 하루에 오는 특수 의뢰 수
