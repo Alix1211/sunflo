@@ -2,26 +2,18 @@
 'use strict';
 (() => {
   // 눌리는 물건 (그림 크기에 대한 비율: x1,y1,x2,y2). 물건보다 넉넉하게 잡음
+  // 썬플로: 기록 물건은 누르지 않고, 달력과 탁자 위 게임기만 눌림
   const OBJ = {
     pad: [
-      { id: 'voice',    name: '말로 쓰기', r: [.755, .30, .905, .46] },   // 일기장 + 깃털 펜
-      { id: 'calendar', name: '달력',     r: [.905, .31, 1.0, .46] },     // 탁상 달력
-      { id: 'today',    name: '오늘 기록', r: [.165, .39, .36, .54] },     // 약통 + 혈압계 + 물컵
-      { id: 'today',    name: '운동',     r: [.79, .70, 1.0, .93] },      // 요가 매트 + 아령
+      { id: 'game',     name: '게임기',  r: [.10, .26, .30, .42] },     // 동그란 탁자 위 게임기
+      { id: 'calendar', name: '달력',    r: [.905, .31, 1.0, .46] },
     ],
     phone: [
-      { id: 'voice',    name: '말로 쓰기', r: [.58, .315, .86, .41] },
-      { id: 'calendar', name: '달력',     r: [.84, .325, 1.0, .40] },
-      { id: 'today',    name: '오늘 기록', r: [.08, .435, .46, .52] },
-      { id: 'today',    name: '운동',     r: [.68, .565, 1.0, .66] },
+      { id: 'game',     name: '게임기',  r: [.06, .42, .48, .53] },
+      { id: 'calendar', name: '달력',    r: [.84, .325, 1.0, .40] },
     ],
   };
-  const OBJ_NEW_PHONE = [                               // 새 세로 그림(노을·밤)은 구도가 달라 따로 잡음
-    { id: 'voice',    name: '말로 쓰기', r: [.58, .40, .86, .49] },
-    { id: 'calendar', name: '달력',     r: [.84, .37, 1.0, .46] },
-    { id: 'today',    name: '오늘 기록', r: [.08, .50, .46, .60] },
-    { id: 'today',    name: '운동',     r: [.68, .66, 1.0, .78] },
-  ];
+  const OBJ_NEW_PHONE = OBJ.phone;
   const soundRect = () => { const b = backupRect(); return [b[0] - b[2] - 16, b[1], b[2], b[3]]; };
   function openSound() {
     openPopup({
@@ -44,16 +36,36 @@
     });
   }
   const roomStage = gardenStage;                          // 정원과 같은 시간표
-  const newPhone = () => G.mode === 'phone' && roomStage() !== '';
+  const newPhone = () => false;                         // 썬플로 방 그림은 낮·저녁·밤 구도가 같음
   const objs = () => newPhone() ? OBJ_NEW_PHONE : OBJ[G.mode];
-  const SOON = { voice: '말로 쓰기', today: '오늘 기록', calendar: '달력' };
+  const SOON = { calendar: '달력' };
   const rects = () => objs().map(o => ({ ...o, rc: [o.r[0] * G.L.W, o.r[1] * G.L.H, (o.r[2] - o.r[0]) * G.L.W, (o.r[3] - o.r[1]) * G.L.H] }));
   const backupRect = () => { const [sx, sy, sw, sh] = G.L.save; return [sx + sw - 300, sy + sh + 10, 300, G.mode === 'pad' ? 70 : 84]; };
   function open(id) {
     if (id === 'voice') return openDiary();
     if (id === 'today') return openToday();
     if (id === 'calendar') return openCalendar();
+    if (id === 'game') return openMini();
   }
+  // 미니게임 「꽃밭 서바이벌」: 1분 버틸 때마다 다이아 1개, 하루 3개까지(그 뒤로도 게임은 계속 가능)
+  const MINI_CAP = 3;
+  function miniLeft() { const S = G.S, d = todayKey(); if (!S.mini || S.mini.day !== d) S.mini = { day: d, got: 0 }; return Math.max(0, MINI_CAP - S.mini.got); }
+  function openMini() {
+    if (document.getElementById('miniFrame')) return;
+    const f = document.createElement('iframe'); f.id = 'miniFrame'; f.src = 'minigame.html?embed=1&left=' + miniLeft();
+    f.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;border:0;z-index:50;background:#5d8a3a';
+    document.body.appendChild(f);
+    if (typeof SFX !== 'undefined' && SFX.bgmPause) SFX.bgmPause();
+  }
+  window.addEventListener('message', e => {
+    const m = e.data || {};
+    if (m.type === 'mini-end') {
+      const give = Math.min(Math.max(0, m.give | 0), miniLeft());
+      if (give > 0) { G.S.mini.got += give; G.S.gems += give; save(); toast(`미니게임 다이아 +${give}`); }
+      G.dirty = true;
+    }
+    if (m.type === 'mini-exit') { const f = document.getElementById('miniFrame'); if (f) f.remove(); G.dirty = true; }
+  });
   function sparkle(x, y, s, ph) {                       // 눌러 보라는 은은한 반짝임
     const a = .45 + .4 * Math.sin(Date.now() / 420 + ph), k = s * (.8 + .2 * Math.sin(Date.now() / 420 + ph));
     ctx.save(); ctx.translate(x, y); ctx.globalAlpha = a; ctx.fillStyle = '#fffbe0'; ctx.shadowColor = 'rgba(255,220,120,.9)'; ctx.shadowBlur = s * .6 * (G.scale || 1);

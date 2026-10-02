@@ -85,7 +85,7 @@ const BED = { w: 709, h: 701, x0: 90, y0: 125, cw: 119, ch: 106, px: 128.3, py: 
 const BUTTONS = {
   garden:     ['orders', 'shop', 'inventory', 'seed', 'room', 'garden', 'greenhouse'],
   greenhouse: ['orders', 'shop', 'craft', 'hint', 'room', 'garden', 'greenhouse'],
-  room:       ['voice', 'today', 'calendar', 'shop', 'room', 'garden', 'greenhouse'],
+  room:       ['calendar', 'shop', 'room', 'garden', 'greenhouse'],
 };
 BUTTONS.shop = [];
 BUTTONS.lab = [];
