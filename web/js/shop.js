@@ -148,7 +148,8 @@ function removeProp(id) {
     if (now < st.talkUntil) col = Math.floor(now / 150) % 2 ? 1 : 0;
     if (now % 4200 < 150) col = 2;
     const row = now < st.faceUntil ? st.face : 0, vk = G.img[`vil_kp_${st.shop}_${col === 1 ? 't' : row ? 's' : 'n'}`], im = vk || ownerImg(row, col) || ownerImg(0, 0); if (!im) return;
-    const w = g.owner.w, h = w * im.height / im.width, x = g.owner.x - w / 2, y = g.owner.y - h;
+    const base = vk ? G.img[`vil_kp_${st.shop}_n`] || im : im;                 // 표정이 바뀌어도 크기는 기본 얼굴에 맞춰 고정
+    const h = g.owner.w * base.height / base.width, w = h * im.width / im.height, x = g.owner.x - w / 2, y = g.owner.y - h;
     ctx.drawImage(im, x, y, w, h); st.ownerRect = [x, y, w, h];
   }
   function drawBubble(g) {
