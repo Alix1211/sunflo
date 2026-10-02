@@ -87,6 +87,15 @@ function openOrders() {
       const list = G.S.orders;
       if (!list.length) { text(G.S.doneToday >= ordersMax() ? '오늘 의뢰는 모두 끝났어요. 내일 새 의뢰가 와요.' : `새 의뢰를 기다리는 중이에요. (${Math.max(1, Math.ceil(((G.S.nextOrderAt || 0) - Date.now()) / MIN))}분 뒤)`, r[0] + r[2] / 2, r[1] + r[3] / 2, 40, '#8a6a44', 'center'); return; }
       // 한 화면에 3칸 크기로 보이고, 의뢰가 더 많으면 밀어서 봄
+      if (G.S.owned.p_n5) {                            // 노란 새(소품): 게시판 맨 위에 지금 가진 꽃 수를 늘 보여 줌
+        const pd = G.mode === 'pad', SH = pd ? 74 : 96, fl = FLOWERS.slice(0, openKinds()), bw = SH * 1.1, iw = (r[2] - bw) / fl.length;
+        rrect(r[0], r[1], r[2], SH, SH / 2); ctx.fillStyle = 'rgba(255,240,200,.85)'; ctx.fill();
+        if (G.img.prop_n5) imgFit(G.img.prop_n5, r[0] + bw / 2, r[1] + SH / 2, SH * 1.05);
+        fl.forEach((f, i) => { const cx = r[0] + bw + iw * i + iw / 2, n = G.S.flowers[f.id] || 0;
+          imgFit(G.img[`flower_${f.id}_bloom`], cx - iw * .18, r[1] + SH / 2, Math.min(SH * .8, iw * .55));
+          text(String(n), cx + iw * .2, r[1] + SH / 2 + 2, pd ? 28 : 32, n ? '#4f7d2c' : '#b8a07a', 'center'); });
+        r = [r[0], r[1] + SH + 14, r[2], r[3] - SH - 14];
+      }
       const GAP = 26, RH = (r[3] - GAP * 2) / 3, total = list.length * RH + (list.length - 1) * GAP;
       scrollBegin(this, r, total);
       list.forEach((o, i) => {
@@ -96,7 +105,7 @@ function openOrders() {
         const ls = G.mode === 'pad' ? 26 : 28; text(o.say, x + 30, y + ls * .95, ls, '#8a6a44', 'left', false, 500);
         const pdm = G.mode === 'pad', s = pdm ? Math.min(h * .6, 100) : Math.min(h * .52, 110);
         for (const id in o.need) {
-          const have = G.S.flowers[id], lab = `${FLOWER[id].name} ${Math.min(have, o.need[id])}/${o.need[id]}`, col = have >= o.need[id] ? '#4f7d2c' : '#8a6a44';
+          const have = G.S.flowers[id], lab = `${FLOWER[id].name} ${G.S.owned.p_n5 ? have : Math.min(have, o.need[id])}/${o.need[id]}`, col = have >= o.need[id] ? '#4f7d2c' : '#8a6a44';
           if (pdm) {                                   // 패드: 그림 오른쪽에 이름 (세로 공간이 좁아서)
             imgFit(G.img[`flower_${id}_bloom`], cx + s / 2, y + h * .6, s);
             text(lab, cx + s + 8, y + h * .62, 30, col, 'left'); ctx.font = font(30); cx += s + 30 + ctx.measureText(lab).width;

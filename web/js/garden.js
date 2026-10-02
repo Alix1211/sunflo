@@ -364,7 +364,7 @@
     up(p, tap) {
       const d = st.drag; st.drag = null; if (!d) return;
       if (d.kind === 'scroll' && tap) {            // 끌지 않고 톡 누른 게시판·우체통
-        if (G.S.owned.p_n5 && inRect(p, birdRect())) return openBird();
+        if (G.S.owned.p_n5 && inRect(p, birdRect())) return openOrders();
         if (inRect(p, G.L.board)) { animateTo(Math.max(0, Math.min(maxScroll(), st.scroll))); return openOrders(); }
         if (inRect(p, G.L.mailbox)) { animateTo(Math.max(0, Math.min(maxScroll(), st.scroll))); return openMail(); }
         for (let i = G.S.beds.length; i < total(); i++) {       // 잠긴 화단을 톡

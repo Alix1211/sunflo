@@ -184,7 +184,7 @@ const PROP_EFFECT = {
   n9: ['grow', 5], n10: ['harvest', 7], n11: ['pts', 6], n12: ['grow', 7], n13: ['harvest', 5], n14: ['sp', 9], n15: ['grow', 8], n16: ['coin', 5],
   n17: ['coin', 7], n18: ['pts', 8], n19: ['seed', 6], n20: ['harvest', 8], n21: ['pts', 9], n22: ['seed', 7], n23: ['sp', 5], n24: ['sp', 8],
 };
-const PROP_SPECIAL = { n5: '게시판에서 내 꽃 수를 세어 줘요' };   // 숫자 능력 대신 특별한 기능
+const PROP_SPECIAL = { n5: '의뢰 게시판에 내 꽃 수를 늘 보여 줘요' };   // 숫자 능력 대신 특별한 기능
 const propEffectText = id => { if (PROP_SPECIAL[id]) return PROP_SPECIAL[id]; const e = PROP_EFFECT[id]; return e ? EFFECT_KIND[e[0]].label(e[1]) : ''; };
 // 가진 소품 능력의 합(0~1). 예: bonus('grow') = 0.14 → 14%
 function bonus(kind) {
