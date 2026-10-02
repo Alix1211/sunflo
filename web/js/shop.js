@@ -12,6 +12,10 @@ function drawDecor(place) {
     ctx.drawImage(im, sl.x - w / 2, sl.a === 'b' ? sl.y - h : sl.y - h / 2, w, h);
   });
 }
+function decorRect(place, id) {   // 놓인 소품의 화면 자리(없으면 null)
+  const list = (G.S.decor && G.S.decor[place]) || [], i = list.indexOf(id); if (i < 0) return null; const sl = DECOR_SLOTS[G.mode][place][i]; if (!sl) return null;
+  return [sl.x - sl.w / 2, sl.a === 'b' ? sl.y - sl.h : sl.y - sl.h / 2, sl.w, sl.h];
+}
 function decorSlots(p) {           // 이 소품이 들어갈 수 있는 자리 번호들 (방은 벽걸이 2자리가 따로)
   const n = DECOR_COUNT[p.place], all = Array.from({ length: n }, (_, i) => i);
   if (p.place === 'room') return p.wall ? all.slice(4) : all.slice(0, 4);

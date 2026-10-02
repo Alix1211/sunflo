@@ -45,20 +45,28 @@
     if (id === 'voice') return openDiary();
     if (id === 'today') return openToday();
     if (id === 'calendar') return openCalendar();
-    if (id === 'game') return openMini();
+    if (id === 'game') return openMini('survival');
   }
   // 미니게임 「꽃밭 서바이벌」: 1분 버틸 때마다 다이아 1개, 하루 3개까지(그 뒤로도 게임은 계속 가능)
   const MINI_CAP = 3;
   function miniLeft() { const S = G.S, d = todayKey(); if (!S.mini || S.mini.day !== d) S.mini = { day: d, got: 0 }; return Math.max(0, MINI_CAP - S.mini.got); }
-  function openMini() {
+  // 놀이별 하루 보상 횟수 (서바이벌은 다이아 3개 따로)
+  const PLAY_CAP = { carrot: 2 };
+  function playLeft(g) { const S = G.S, d = todayKey(); S.plays = S.plays || {}; if (!S.plays[g] || S.plays[g].day !== d) S.plays[g] = { day: d, n: 0 }; return Math.max(0, PLAY_CAP[g] - S.plays[g].n); }
+  function openMini(game) {
     if (document.getElementById('miniFrame')) return;
-    const f = document.createElement('iframe'); f.id = 'miniFrame'; f.src = 'minigame.html?embed=1&left=' + miniLeft();
+    const f = document.createElement('iframe'); f.id = 'miniFrame'; f.src = game === 'carrot' ? 'carrot.html?embed=1&left=' + playLeft('carrot') : 'minigame.html?embed=1&left=' + miniLeft();
     f.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;border:0;z-index:50;background:#5d8a3a';
     document.body.appendChild(f);
     if (typeof SFX !== 'undefined' && SFX.bgmPause) SFX.bgmPause();
   }
   window.addEventListener('message', e => {
     const m = e.data || {};
+    if (m.type === 'mini-end' && m.game === 'carrot') {
+      const g = Math.min(100, Math.max(0, m.gold | 0));
+      if (g > 0 && playLeft('carrot') > 0) { G.S.plays.carrot.n++; G.S.coins += g; save(); toast(`당근 뽑기 +${g}골드`); }
+      G.dirty = true; return;
+    }
     if (m.type === 'mini-end') {
       if (typeof Story !== 'undefined') Story.mini(m.sec);
       const give = Math.min(Math.max(0, m.give | 0), miniLeft());
@@ -113,6 +121,7 @@
       if (cr && p.x > cr.x && p.x < cr.x + cr.w && p.y > cr.y && p.y < cr.y + cr.h) {
         pose = REACT[Math.floor(Math.random() * REACT.length)]; poseUntil = Date.now() + 2200; G.dirty = true; return;
       }
+      { const rb = decorRect('room', 'r5'); if (rb && inRect(p, rb)) { openMini('carrot'); return; } }   // 토끼 인형 → 당근 뽑기
       if (inRect(p, backupRect())) { openBackup(); return; }
       if (inRect(p, soundRect())) { openSound(); return; }
       const hit = rects().find(o => inRect(p, o.rc));
